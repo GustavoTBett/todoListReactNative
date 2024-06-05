@@ -16,6 +16,19 @@ export function ListTodo({ navigation }) {
         setTasks(tasks);
     }
 
+    const toggleTaskCompletion = async (task) => {
+        try {
+            const updatedValue = task.value === 1 ? 0 : 1;
+            const statement = await db.prepareAsync(
+                "UPDATE tasks SET value = $value WHERE id = $id"
+            );
+            await statement.executeAsync({ $value: updatedValue, $id: task.id });
+            fetchData();
+        } catch (error) {
+            console.error("Error updating task:", error);
+        }
+    };
+
     useFocusEffect(
         React.useCallback(() => {
             fetchData();

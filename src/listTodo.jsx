@@ -1,35 +1,55 @@
 import * as React from 'react';
 import { Button, View, Text, StyleSheet } from 'react-native';
 import { Checkbox, FAB, List, MD3Colors } from 'react-native-paper';
+import openDB from '../db';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
 
 export function ListTodo({ navigation }) {
-    const [checked, setChecked] = React.useState(false);
+    const [tasks, setTasks] = React.useState([]);
+
+    const db = openDB();
+
+    async function fetchData() {
+        const statement = await db.getAllAsync("SELECT * FROM tasks");
+        const tasks = statement;
+        setTasks(tasks);
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchData();
+        }, [])
+    );
 
     return (
         <View style={{ flex: 1, padding: 16 }}>
+        <ScrollView>
             <List.Section>
-                <List.Item title="First Item" left={() => <Checkbox
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                    }}
-                />} />
-                <List.Item
-                    title="Second Item"
-                    left={() => <Checkbox
-                        status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => {
-                            setChecked(!checked);
-                        }}
-                    />}
-                />
+                {tasks.map(task => (
+                    <List.Item
+                        key={task.id}
+                        title={task.value === 1 ? (
+                            <Text style={{ textDecorationLine: 'line-through' }}>{task.name}</Text>
+                        ) : (
+                            task.name
+                        )}
+                        right={() => (
+                            <Checkbox
+                                status={task.value ? 'checked' : 'unchecked'}
+                                onPress={() => toggleTaskCompletion(task)}
+                            />
+                        )}
+                    />
+                ))}
             </List.Section>
-            <FAB
-                icon="plus"
-                style={styles.fab}
-                onPress={() => navigation.navigate('Adicionar')}
-            />
-        </View>
+        </ScrollView>
+        <FAB
+            icon="plus"
+            style={styles.fab}
+            onPress={() => navigation.navigate('Adicionar')}
+        />
+    </View>
     );
 }
 

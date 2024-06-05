@@ -24,32 +24,32 @@ export function ListTodo({ navigation }) {
 
     return (
         <View style={{ flex: 1, padding: 16 }}>
-        <ScrollView>
-            <List.Section>
-                {tasks.map(task => (
-                    <List.Item
-                        key={task.id}
-                        title={task.value === 1 ? (
-                            <Text style={{ textDecorationLine: 'line-through' }}>{task.name}</Text>
-                        ) : (
-                            task.name
-                        )}
-                        right={() => (
-                            <Checkbox
-                                status={task.value ? 'checked' : 'unchecked'}
-                                onPress={() => toggleTaskCompletion(task)}
-                            />
-                        )}
-                    />
-                ))}
-            </List.Section>
-        </ScrollView>
-        <FAB
-            icon="plus"
-            style={styles.fab}
-            onPress={() => navigation.navigate('Adicionar')}
-        />
-    </View>
+            <ScrollView>
+                <List.Section>
+                    {tasks.map(task => (
+                        <List.Item
+                            key={task.id}
+                            title={task.value === 1 ? (
+                                <Text style={{ textDecorationLine: 'line-through' }}>{task.name}</Text>
+                            ) : (
+                                task.name
+                            )}
+                            right={() => (
+                                <Checkbox
+                                    status={task.value ? 'checked' : 'unchecked'}
+                                    onPress={() => toggleTaskCompletion(task)}
+                                />
+                            )}
+                        />
+                    ))}
+                </List.Section>
+            </ScrollView>
+            <FAB
+                icon="plus"
+                style={styles.fab}
+                onPress={() => navigation.navigate('Adicionar')}
+            />
+        </View>
     );
 }
 
